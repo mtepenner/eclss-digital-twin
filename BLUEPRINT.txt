@@ -1,0 +1,71 @@
+eclss-digital-twin/
+│
+├── .github/                             # Automated CI/CD pipelines
+│   └── workflows/
+│       ├── test-load-balancer.yml       # Unit tests for the power shedding logic
+│       └── build-cluster.yml
+│
+├── event_bus/                           # Infrastructure: The Central Nervous System
+│   ├── config/
+│   │   └── nats-server.conf             # NATS or RabbitMQ configuration for high-throughput pub/sub
+│   └── Dockerfile
+│
+├── power_manager/                       # Go: The Autonomous Grid Controller
+│   ├── cmd/
+│   │   └── grid/
+│   │       └── main.go                  # Subscribes to module requests and allocates wattage
+│   ├── internal/
+│   │   ├── generation/
+│   │   │   ├── solar_arrays.go          # Simulates insolation drops during Martian dust storms
+│   │   │   └── battery_bank.go          # Tracks state-of-charge and discharge rates
+│   │   └── load_shedding/
+│   │       └── priority_queue.go        # THE CRITICAL LOGIC: Decides who gets cut when power is low
+│   ├── go.mod
+│   └── Dockerfile
+│
+├── air_revitalization/                  # Python: O2 Generation & CO2 Scrubbing (Priority 1)
+│   ├── app/
+│   │   ├── systems/
+│   │   │   ├── sabatier_reactor.py      # Combines CO2 and H2 into Water and Methane
+│   │   │   └── electrolysis.py          # Splits Water into O2 and H2
+│   │   ├── core/
+│   │   │   └── bus_client.py            # Publishes CO2 ppm levels and requests 1500W of power
+│   │   └── main.py
+│   ├── requirements.txt
+│   └── Dockerfile
+│
+├── water_recovery/                      # Python: Brine & Humidity Processing (Priority 2)
+│   ├── app/
+│   │   ├── systems/
+│   │   │   ├── humidity_condenser.py    # Pulls moisture from the cabin air
+│   │   │   └── urine_processor.py       # High power draw, but can be paused safely for 48 hours
+│   │   ├── core/
+│   │   │   └── bus_client.py            # Publishes Water tank levels and requests 2000W of power
+│   │   └── main.py
+│   ├── requirements.txt
+│   └── Dockerfile
+│
+├── central_terminal/                    # React + TypeScript: The Habitat Dashboard
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── PowerGridGraph.tsx       # Node-based visualizer showing power flowing to modules
+│   │   │   ├── ResourceGauges.tsx       # Live levels for O2, CO2, Clean Water, and Battery %
+│   │   │   ├── EventLog.tsx             # Scrolling terminal of autonomous grid decisions
+│   │   │   └── SystemOverrides.tsx      # Manual switches to force-restart killed modules
+│   │   ├── hooks/
+│   │   │   └── useEventStream.ts        # Connects to the event bus via WebSockets
+│   │   ├── App.tsx
+│   │   └── index.tsx
+│   ├── package.json                     # Needs react-flow-renderer (for power routing graphs)
+│   └── Dockerfile
+│
+├── k8s/                                 # Kubernetes Manifests: Simulating physical isolation
+│   ├── event-bus.yaml                   # Deploys NATS
+│   ├── power-manager.yaml               # High-availability deployment
+│   ├── air-module.yaml                  # Deploys the Python Air service
+│   ├── water-module.yaml                # Deploys the Python Water service
+│   └── ingress.yaml
+│
+├── docker-compose.yml                   # Boots the entire simulated base locally
+├── Makefile
+└── README.md
