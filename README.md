@@ -43,7 +43,7 @@ The digital twin mimics physical isolation by containerizing distinct systems:
 ### Setup Steps
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/yourusername/eclss-digital-twin.git](https://github.com/yourusername/eclss-digital-twin.git)
+   git clone https://github.com/mtepenner/eclss-digital-twin.git
    cd eclss-digital-twin
    ```
 2. Boot the entire simulated base locally using Docker Compose:
