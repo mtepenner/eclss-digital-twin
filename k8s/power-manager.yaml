@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: power-manager
+  labels:
+    app: power-manager
+    component: grid-controller
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: power-manager
+  template:
+    metadata:
+      labels:
+        app: power-manager
+    spec:
+      containers:
+        - name: power-manager
+          image: eclss/power-manager:latest
+          env:
+            - name: NATS_URL
+              value: "nats://nats:4222"
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: power-manager
+spec:
+  selector:
+    app: power-manager
+  ports:
+    - port: 8080
+      targetPort: 8080

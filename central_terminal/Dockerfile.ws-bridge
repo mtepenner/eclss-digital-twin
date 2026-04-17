@@ -1,0 +1,9 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+COPY ws_bridge_requirements.txt .
+RUN pip install --no-cache-dir -r ws_bridge_requirements.txt
+COPY ws_bridge.py .
+
+EXPOSE 9090
+CMD ["python", "ws_bridge.py"]

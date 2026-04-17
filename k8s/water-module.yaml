@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: water-recovery
+  labels:
+    app: water-recovery
+    component: life-support
+    priority: "2"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: water-recovery
+  template:
+    metadata:
+      labels:
+        app: water-recovery
+    spec:
+      containers:
+        - name: water-recovery
+          image: eclss/water-recovery:latest
+          env:
+            - name: NATS_URL
+              value: "nats://nats:4222"
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

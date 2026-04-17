@@ -1,0 +1,34 @@
+name: Test Load Balancer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'power_manager/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'power_manager/**'
+
+jobs:
+  test-load-shedding:
+    name: Power Shedding Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache-dependency-path: power_manager/go.sum
+
+      - name: Run load shedding tests
+        working-directory: power_manager
+        run: go test -v -race ./internal/load_shedding/
+
+      - name: Run all Go tests
+        working-directory: power_manager
+        run: go test -v -race ./...

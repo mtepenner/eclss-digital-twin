@@ -1,0 +1,40 @@
+name: Build Cluster
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-services:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Event Bus
+        run: docker build -t eclss/event-bus:latest ./event_bus
+
+      - name: Build Power Manager
+        run: docker build -t eclss/power-manager:latest ./power_manager
+
+      - name: Build Air Revitalization
+        run: docker build -t eclss/air-revitalization:latest ./air_revitalization
+
+      - name: Build Water Recovery
+        run: docker build -t eclss/water-recovery:latest ./water_recovery
+
+      - name: Build WS Bridge
+        run: docker build -t eclss/ws-bridge:latest -f ./central_terminal/Dockerfile.ws-bridge ./central_terminal
+
+      - name: Build Central Terminal
+        run: docker build -t eclss/central-terminal:latest ./central_terminal
+
+      - name: Verify Docker Compose config
+        run: docker compose config

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: air-revitalization
+  labels:
+    app: air-revitalization
+    component: life-support
+    priority: "1"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: air-revitalization
+  template:
+    metadata:
+      labels:
+        app: air-revitalization
+    spec:
+      containers:
+        - name: air-revitalization
+          image: eclss/air-revitalization:latest
+          env:
+            - name: NATS_URL
+              value: "nats://nats:4222"
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

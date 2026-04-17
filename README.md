@@ -29,10 +29,20 @@ The digital twin mimics physical isolation by containerizing distinct systems:
 5. **Central Terminal (React):** The mission control dashboard connecting to the event stream via WebSockets.
 
 ## 🛠️ Technologies Used
-* **Core Logic:** Go (Golang), Python
-* **Frontend UI:** React, TypeScript, WebSockets, `react-flow-renderer`
-* **Message Broker:** NATS / RabbitMQ
+* **Core Logic:** Go 1.22, Python 3.12
+* **Frontend UI:** React 18, TypeScript 5, Vite 5, ReactFlow 11, WebSockets
+* **Message Broker:** NATS 2.10
 * **Infrastructure & Deployment:** Docker, Docker Compose, Kubernetes (K8s), GitHub Actions
+
+### Service Ports
+
+| Service | Host Port | Description |
+|---------|-----------|-------------|
+| Central Terminal | 3001 | React dashboard (nginx) |
+| NATS Client | 4222 | Event bus client connections |
+| NATS Monitor | 8222 | HTTP monitoring (`/varz`) |
+| Power Manager | 8081 | Health endpoint (`/healthz`) |
+| WebSocket Bridge | 9090 | NATS → browser proxy |
 
 ## 💻 Installation
 
@@ -48,12 +58,19 @@ The digital twin mimics physical isolation by containerizing distinct systems:
    ```
 2. Boot the entire simulated base locally using Docker Compose:
    ```bash
-   docker-compose up --build -d
+   docker compose up --build -d
+   ```
+   Or use the Makefile:
+   ```bash
+   make up      # build & start
+   make logs    # stream logs
+   make test    # run Go unit tests
+   make down    # tear down
    ```
 
 ## 🎮 Usage
 Once the cluster is initialized:
-1. Navigate to the Central Terminal in your browser (typically `http://localhost:3000`).
+1. Navigate to the Central Terminal in your browser at `http://localhost:3001`.
 2. Monitor the **Resource Gauges** for real-time levels of O2, CO2, Clean Water, and Battery percentage.
 3. Watch the **Power Grid Graph** to see dynamic allocations. Try triggering a simulated solar drop to watch the load shedding logic in action.
 4. Monitor the **Event Log** to understand the autonomous grid decisions being made.

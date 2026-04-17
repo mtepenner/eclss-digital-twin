@@ -1,0 +1,76 @@
+services:
+  # === Event Bus: Central Nervous System ===
+  nats:
+    build: ./event_bus
+    container_name: eclss-nats
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8222/varz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+  # === Power Manager: Autonomous Grid Controller (Go) ===
+  power-manager:
+    build: ./power_manager
+    container_name: eclss-power-manager
+    environment:
+      - NATS_URL=nats://nats:4222
+    depends_on:
+      nats:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+    restart: unless-stopped
+
+  # === Air Revitalization: O2 Generation & CO2 Scrubbing (Python) ===
+  air-revitalization:
+    build: ./air_revitalization
+    container_name: eclss-air
+    environment:
+      - NATS_URL=nats://nats:4222
+    depends_on:
+      nats:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # === Water Recovery: Brine & Humidity Processing (Python) ===
+  water-recovery:
+    build: ./water_recovery
+    container_name: eclss-water
+    environment:
+      - NATS_URL=nats://nats:4222
+    depends_on:
+      nats:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # === WebSocket Bridge: NATS → Browser ===
+  ws-bridge:
+    build:
+      context: ./central_terminal
+      dockerfile: Dockerfile.ws-bridge
+    container_name: eclss-ws-bridge
+    environment:
+      - NATS_URL=nats://nats:4222
+      - WS_PORT=9090
+    depends_on:
+      nats:
+        condition: service_healthy
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  # === Central Terminal: Habitat Dashboard (React) ===
+  central-terminal:
+    build: ./central_terminal
+    container_name: eclss-dashboard
+    depends_on:
+      - ws-bridge
+    ports:
+      - "3001:3000"
+    restart: unless-stopped
